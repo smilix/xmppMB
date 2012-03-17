@@ -1,0 +1,14 @@
+--- Alte Nachrichten
+15 Mar 20:15:13 - [data in] <message from='holgertest001@jabber.ccc.de' to='holgertest001@jabber.ccc.de/36982514601331838911981965'><event xmlns='http://jabber.org/protocol/pubsub#event'><items node='http://jabber.org/protocol/tune'><item id='533CCA9564F63'><tune xmlns='http://jabber.org/protocol/tune'/></item></items></event><delay xmlns='urn:xmpp:delay' from='holgertest001@jabber.ccc.de/17930903151331838292144005' stamp='2012-03-15T19:04:53Z'></delay></message>
+15 Mar 20:15:13 - Recieved history group chat message (2012-03-15T19:05:08Z): first message
+
+--- Neue Nachrichten, selbst gesendet
+15 Mar 20:15:13 - Recieved group chat message: und noch eines
+15 Mar 20:15:13 - [data in] <message from='holgertest@conference.jabber.ccc.de/node_test' to='holgertest001@jabber.ccc.de/36982514601331838911981965' type='groupchat'><body>und noch eines</body></message>
+
+--- Neue Nachrichten, anderer Sender
+15 Mar 20:20:59 - Recieved group chat message: lalalala
+15 Mar 20:20:59 - [data in] <message from='holgertest@conference.jabber.ccc.de/holgertest001' to='holgertest001@jabber.ccc.de/36982514601331838911981965' type='groupchat' id='purple1ef7304b'><body>lalalala</body></message>
+
+--- Channel topic
+15 Mar 23:20:32 - [data in] <message from='holgertest@conference.jabber.ccc.de' to='holgertest001@jabber.ccc.de/3753564311331850958970976' type='groupchat'><body>This room is not anonymous</body><x xmlns='http://jabber.org/protocol/muc#user'><status code='100'/></x></message>

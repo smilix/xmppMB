@@ -1,0 +1,11 @@
+{
+    "name": "application-name"
+  , "version": "0.0.1"
+  , "private": true
+  , "dependencies": {
+      "express": "2.5.8"
+      , "jqtpl" : "1.0.x"
+    , "node-xmpp": "0.3.x"
+    , "dateformat": "1.0.2-1.2.3"
+  }
+}

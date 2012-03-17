@@ -1,0 +1,10 @@
+#!/bin/bash
+PROJECT=/home/nodejs/xmppMB
+TMP=/home/nodejs/npm_tmp
+
+cp package.json $TMP/
+cd $TMP
+npm install
+cp -r node_modules $PROJECT/
+cd $PROJECT
+
