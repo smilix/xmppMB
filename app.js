@@ -1,27 +1,26 @@
 "use strict";
 
 var express = require('express');
-var jqtpl = require("jqtpl");
-var routes = require('./routes');
 var dateFormat = require('dateformat');
 var util = require('util');
 
 var config = require('./config.js');
 var XmppClient = require('./XmppClient.js');
 
+var client = new XmppClient({
+  config : config
+// , debug: true
+});
+
 var app = module.exports = express.createServer();
 
 app.configure(function() {
   app.set('views', __dirname + '/views');
-  // app.set('view engine', 'jade');
-  app.set("view engine", "html");
   app.set('view options', {
     layout : false
   });
-  app.register(".html", jqtpl.express);
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
 
@@ -36,9 +35,9 @@ app.configure('production', function() {
   app.use(express.errorHandler());
 });
 
+
 // Routes
 
-app.get('/', routes.index);
 app.post('/newMessage', function(req, res) {
   var ip = req.connection.remoteAddress;
   if (!ip) {
@@ -58,15 +57,6 @@ app.post('/newMessage', function(req, res) {
   util.log(util.format("%s (%s) posts: '%s'", name, ip, msg));
   client.send(name, msg);
   res.json({status: 0, msg: ""});
-});
-
-var client = new XmppClient({
-  config : config
-// , debug: true
-});
-
-client.on('message', function(msg, index) {
-  util.log('Generic message listener: ' + JSON.stringify(msg));
 });
 
 app.get('/chat-stream', function(req, res) {
@@ -91,6 +81,15 @@ app.get('/allMessages', function(req, res) {
   }
   res.json(result);
 });
+
+app.listen(config.listenOnPort);
+util.log(util.format("Express server listening on port %d in %s mode", app.address().port, app.settings.env));
+
+// do the connect as last action, to ensure a propper startet webserver
+client.connect();
+
+
+/* help functions */
 
 function writeEvent(res, channel, messageId, message) {
   res.write('event: ' + channel + '\n' + 'id: ' + messageId + '\n' + 'data: ' + message + '\n\n');
@@ -117,9 +116,3 @@ function prepareMsgForClient(item) {
       msg: item.msg
   };
 }
-
-app.listen(config.listenOnPort);
-console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
-
-// do the connect as last action, to ensure a propper startet webserver
-client.connect();

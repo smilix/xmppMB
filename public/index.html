@@ -1,0 +1,44 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+
+<title>ips-notes</title>
+<meta name="description" content="">
+<meta name="author" content="">
+
+<link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+    <header>
+        <h1>ips-notes</h1>
+    </header>
+    <div id="statusLed">
+      <div class="ok" title="Verbindung offen, alles OK."></div>
+      <div class="error" title="Verbindung unterbrochen!"></div>
+    </div>
+    
+    <div id="postMessage" class="closed">
+        <a href="#" class="anker">P</a><span class="ankerOpen hideIfClosed">ost</span>
+        <span class="error hideIfClosed"></span>
+        <a href="#" class="closeButton hideIfClosed" title="Schließen">X</a>
+        <div class="form hideIfClosed">
+          <textarea id="newMessage" class="hideIfClosed" placeholder="Deine Nachricht ans Team"></textarea>
+          <button id="cancelMessage" class="hideIfClosed btn">Abbrechen</button>
+          <button id="sendMessage" class="hideIfClosed btn btn-success">Senden</button>
+        </div>
+    </div>
+
+    <div role="main" class="container">
+      <div class="wrapper shadow">
+		    <ul id="chatList" class="">
+		    </ul>
+      </div>
+    </div>
+    <footer> by Holger </footer>
+    
+    <script src="/js/jquery-1.7.1.min.js"></script>
+    <script src="/js/script.js"> </script>
+</body>
+</html>
