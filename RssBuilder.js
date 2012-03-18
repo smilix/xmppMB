@@ -5,6 +5,7 @@
 
 var util = require('util');
 var RSS = require("rss");
+var crypto = require('crypto');
 
 function RssBuilder(options, MESSAGES) {
   options = options || {};
@@ -38,12 +39,14 @@ function createFeed(options, MESSAGES, items) {
 
   for ( var i = items.length - 1; i >= 0; i--) {
     var item = items[i];
+    var shasum = crypto.createHash('sha1');
+    var guid = shasum.update(item.msg, 'utf8').digest('hex');
     feed.item({
       author : item.sender,
       title : util.format(MESSAGES['feedItemTitle'], item.sender),
       description : item.msg,
       date : item.date,
-      guid : item.date.getTime()
+      guid : guid
     });
   }
 
