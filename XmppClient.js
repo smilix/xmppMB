@@ -162,7 +162,7 @@ XmppClient.prototype.send = function(nick, message) {
     self._sendOnRoomEntered.push({nick:nick, msg: message});
     return;
   }
-  util.log(util.format("Sending for '%s': %s", nick, message));
+//  util.log(util.format("Sending for '%s': %s", nick, message));
   self.cl.send(new xmpp.Element('message', {
     to : self._config.xmpp.roomJid,
     type : 'groupchat'

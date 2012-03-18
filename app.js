@@ -6,10 +6,16 @@ var util = require('util');
 
 var config = require('./config.js');
 var XmppClient = require('./XmppClient.js');
+var RssBuilder = require('./RssBuilder.js');
 
 var client = new XmppClient({
   config : config
 // , debug: true
+});
+
+var feedBuilder = new RssBuilder({
+  siteUrl: config.siteUrl,
+  feedUrl: config.siteUrl + '/rssFeed'
 });
 
 var app = module.exports = express.createServer();
@@ -19,9 +25,14 @@ app.configure(function() {
   app.set('view options', {
     layout : false
   });
+  app.use(function (req, res, next) {
+    res.removeHeader("X-Powered-By");
+    next();
+  });   
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.static(__dirname + '/public'));
+  app.use(express.logger(':date :method :status :url :referrer :user-agent'));
 });
 
 app.configure('development', function() {
@@ -35,8 +46,7 @@ app.configure('production', function() {
   app.use(express.errorHandler());
 });
 
-
-// Routes
+// sites
 
 app.post('/newMessage', function(req, res) {
   var ip = req.connection.remoteAddress;
@@ -80,6 +90,13 @@ app.get('/allMessages', function(req, res) {
     result.push(prepareMsgForClient(msg[i]));
   }
   res.json(result);
+});
+
+app.get('/rssFeed', function(req, res) {
+  res.charset = 'UTF-8';
+  res.contentType('text/xml');
+  var feedData = feedBuilder.getFeed(client.getMessages());
+  res.send(feedData);
 });
 
 app.listen(config.listenOnPort);
