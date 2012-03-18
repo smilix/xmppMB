@@ -4,21 +4,20 @@
 
 module.exports = {
   /* index.html */
-  title : 'ips-note',
-  statusOk : 'Verbindung offen, alles OK.',
-  statusError : 'Verbindung unterbrochen!',
-  close : 'Schließen',
+  title : 'xmppMB',
+  statusOk : 'Connection open, everything is fine!.',
+  statusError : 'Connection error!',
+  close : 'Close',
   ankerPost1 : 'P',
   ankerPost2 : 'ost',
-  messagePlaceholder : 'Deine Nachricht ans Team',
-  cancel : 'Abbrechen',
-  send : 'Senden',
+  messagePlaceholder : 'Your message',
+  cancel : 'Cancel',
+  send : 'Send',
   /* app.js */
   errorGeneric : 'Internal server error.',
-  errorUserNotAllowed : 'Du darfst nicht senden.',
+  errorUserNotAllowed : 'You are not allowed to send.',
   /* RssBuilder.js */
-  feedDescription : 'Alle Nachrichten aus dem Jabber Gruppenchat \'%s\'.',
-  feedTitle: 'ips-note',
-  feedItemTitle: 'Von: %s'
-    
+  feedDescription : 'All messages from the Jabber group chat \'%s\'.',
+  feedTitle: 'xmppMB feed',
+  feedItemTitle: 'From: %s'
 };
