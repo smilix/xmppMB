@@ -10,7 +10,6 @@ var StringUtils = require('./StringUtils.js');
 
 function XmppClient(params) {
   events.EventEmitter.call(this);
-  var self = this;
 
   this._config = params.config;
   this._debug = params.debug;

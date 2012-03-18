@@ -6,7 +6,7 @@
 var util = require('util');
 var RSS = require("rss");
 
-function RssBuilder(options) {
+function RssBuilder(options, MESSAGES) {
   options = options || {};
 
   this.lastBuild = 0;
@@ -18,7 +18,7 @@ function RssBuilder(options) {
       newestItemDate = items[items.length - 1].date.getTime();
     }
     if (this.lastBuild === null || this.lastBuild <= newestItemDate) {
-      this.feedCache = createFeed(options, items);
+      this.feedCache = createFeed(options, MESSAGES, items);
       this.lastBuild = new Date().getTime();
     }
 
@@ -26,28 +26,27 @@ function RssBuilder(options) {
   };
 }
 
-function createFeed(options, items) {
+function createFeed(options, MESSAGES, items) {
   util.log("Create new feed");
+  var desc = util.format(MESSAGES['feedDescription'], options.chatRoom) + util.format(' [%s (%s)]', MESSAGES['appName'], MESSAGES['appVersion']);
   var feed = new RSS({
-    title: "ips-notes",
-    description: "All messages from the jabber group chat 'ips-notes'",
-    feed_url: options.feedUrl,
-    site_url: options.siteUrl,
-    image_url: "",
-    author: "xmppMB feed builder"
+    title : MESSAGES['feedTitle'],
+    description : desc,
+    feed_url : options.feedUrl,
+    site_url : options.siteUrl
   });
-  
-  for (var i=items.length-1; i>=0; i--) {
+
+  for ( var i = items.length - 1; i >= 0; i--) {
     var item = items[i];
     feed.item({
-      author: item.sender,
-      title: "From: " + item.sender,
-      description: item.msg,
-      date: item.date,
-      guid: item.date.getTime()
+      author : item.sender,
+      title : util.format(MESSAGES['feedItemTitle'], item.sender),
+      description : item.msg,
+      date : item.date,
+      guid : item.date.getTime()
     });
   }
-  
+
   return feed.xml();
 }
 

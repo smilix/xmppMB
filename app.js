@@ -1,12 +1,15 @@
 "use strict";
 
 var express = require('express');
+var jqtpl = require("jqtpl");
 var dateFormat = require('dateformat');
 var util = require('util');
 
 var config = require('./config.js');
 var XmppClient = require('./XmppClient.js');
 var RssBuilder = require('./RssBuilder.js');
+var MESSAGES = require('./messages.js');
+addVersionInfo(MESSAGES);
 
 var client = new XmppClient({
   config : config
@@ -15,8 +18,9 @@ var client = new XmppClient({
 
 var feedBuilder = new RssBuilder({
   siteUrl: config.siteUrl,
-  feedUrl: config.siteUrl + '/rssFeed'
-});
+  feedUrl: config.siteUrl + '/rssFeed',
+  chatRoom: config.xmpp.roomJid
+}, MESSAGES);
 
 var app = module.exports = express.createServer();
 
@@ -25,10 +29,12 @@ app.configure(function() {
   app.set('view options', {
     layout : false
   });
+  app.set("view engine", "html");
   app.use(function (req, res, next) {
     res.removeHeader("X-Powered-By");
     next();
   });   
+  app.register(".html", jqtpl.express);
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.static(__dirname + '/public'));
@@ -48,18 +54,22 @@ app.configure('production', function() {
 
 // sites
 
+app.get('/', function(req, res) {
+  res.render('index', MESSAGES );
+});
+
 app.post('/newMessage', function(req, res) {
   var ip = req.connection.remoteAddress;
   if (!ip) {
     util.log("Error: Can't determine client ip.");
-    res.json({status: 1, msg: "Internal server error."});
+    res.json({status: 1, msg: MESSAGES['errorGeneric']});
     return;
   }
   
   var name = config.validPoster[ip];
   if (!name) {
     util.log(util.format("Warn: Unknown ip address %s. You may upate the configuration.", ip));
-    res.json({status: 2, msg: "You are not allowed to post."});
+    res.json({status: 2, msg: MESSAGES['errorUserNotAllowed']});
     return;
   }
   var msg = req.body.msg;
@@ -132,4 +142,11 @@ function prepareMsgForClient(item) {
       date: dateFormat(item.date, config.htmlClientDateFormat),
       msg: item.msg
   };
+}
+
+// parses the package.json and adds the version and name properties
+function addVersionInfo(appMessages) {
+  var p = require('./package.json');
+  appMessages.appVersion = p.version;
+  appMessages.appName = p.name;
 }

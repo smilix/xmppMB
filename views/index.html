@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 
-<title>ips-notes</title>
+<title>${title}</title>
 <meta name="description" content="">
 <meta name="author" content="">
 <link rel="stylesheet" href="/css/style.css">
@@ -11,21 +11,21 @@
 </head>
 <body>
     <header>
-        <h1>ips-notes<a href="/rssFeed"><img src="/images/feed-icon-14x14.png" /></a></h1>
+        <h1>${title}<a href="/rssFeed"><img src="/images/feed-icon-14x14.png" /></a></h1>
     </header>
     <div id="statusLed">
-      <div class="ok" title="Verbindung offen, alles OK."></div>
-      <div class="error" title="Verbindung unterbrochen!"></div>
+      <div class="ok" title="${statusOk}"></div>
+      <div class="error" title="${statusError}"></div>
     </div>
     
     <div id="postMessage" class="closed">
-        <a href="#" class="anker">P</a><span class="ankerOpen hideIfClosed">ost</span>
+        <a href="#" class="anker">${ankerPost1}</a><span class="ankerOpen hideIfClosed">${ankerPost2}</span>
         <span class="error hideIfClosed"></span>
-        <a href="#" class="closeButton hideIfClosed" title="Schließen">X</a>
+        <a href="#" class="closeButton hideIfClosed" title="${close}">X</a>
         <div class="form hideIfClosed">
-          <textarea id="newMessage" class="hideIfClosed" placeholder="Deine Nachricht ans Team"></textarea>
-          <button id="cancelMessage" class="hideIfClosed btn">Abbrechen</button>
-          <button id="sendMessage" class="hideIfClosed btn btn-success">Senden</button>
+          <textarea id="newMessage" class="hideIfClosed" placeholder="${messagePlaceholder}"></textarea>
+          <button id="cancelMessage" class="hideIfClosed btn">${cancel}</button>
+          <button id="sendMessage" class="hideIfClosed btn btn-success">${send}</button>
         </div>
     </div>
 
@@ -35,7 +35,7 @@
 		    </ul>
       </div>
     </div>
-    <footer> by Holger </footer>
+    <footer> ${appName} v${appVersion} - by Holger </footer>
     
     <script src="/js/jquery-1.7.1.min.js"></script>
     <script src="/js/script.js"> </script>
