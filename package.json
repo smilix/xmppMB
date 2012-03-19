@@ -1,6 +1,6 @@
 {
     "name": "xmppMB"
-  , "version": "0.9"
+  , "version": "0.9.0"
   , "private": true
   , "dependencies": {
       "express": "2.5.8"
