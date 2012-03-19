@@ -17,6 +17,8 @@ var client = new XmppClient({
   config : config
 // , debug: true
 });
+// I don't expect more concurrent listeners
+client.setMaxListeners(30);
 
 var feedBuilder = new RssBuilder({
   siteUrl: config.siteUrl,
@@ -86,12 +88,21 @@ app.get('/chat-stream', function(req, res) {
 
   writeStreamHeaders(res, req);
   
+  var keepalive = setInterval(function() { writeEvent(res, "keepalive", messageCount++, 1); }, config.streamKeepAliveIntervalInSec * 1000);
+  
   var messageCount = 0;
-  client.on('message', function(msg, index) {
+  var onMessageFn = function(msg, index) {
     writeEvent(res, 'message', messageCount++, JSON.stringify(prepareMsgForClient(msg)));
+  };
+  client.on('message', onMessageFn);
+  
+  
+  // remove the message listener to avoid memory leakage 
+  res.on('close', function resClosed() {
+    client.removeListener('message', onMessageFn);
+    clearInterval(keepalive);
   });
   
-   var keepalive = setInterval(function() { writeEvent(res, "keepalive", messageCount++, 1); }, config.streamKeepAliveIntervalInSec * 1000);
 });
 
 app.get('/allMessages', function(req, res) {
