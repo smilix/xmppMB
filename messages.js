@@ -7,6 +7,7 @@ module.exports = {
   title : 'xmppMB',
   statusOk : 'Connection open, everything is fine!.',
   statusError : 'Connection error!',
+  clickToPost : 'Click here to post a message.',
   close : 'Close',
   ankerPost1 : 'P',
   ankerPost2 : 'ost',

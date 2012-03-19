@@ -4,11 +4,13 @@ var express = require('express');
 var jqtpl = require("jqtpl");
 var dateFormat = require('dateformat');
 var util = require('util');
+var path = require('path');
 
-var config = require('./config.js');
+var config = requireWithFallback('./config-dev.js', './config.js'); 
+var MESSAGES = requireWithFallback('./messages-dev.js', './messages.js'); 
+
 var XmppClient = require('./XmppClient.js');
 var RssBuilder = require('./RssBuilder.js');
-var MESSAGES = require('./messages.js');
 addVersionInfo(MESSAGES);
 
 var client = new XmppClient({
@@ -150,3 +152,12 @@ function addVersionInfo(appMessages) {
   appMessages.appVersion = p.version;
   appMessages.appName = p.name;
 }
+
+function requireWithFallback(tryFirst, fallback) {
+  if (path.existsSync(tryFirst)) {
+    return require(tryFirst);
+  }
+  
+  return require(fallback);
+}
+
