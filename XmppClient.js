@@ -45,7 +45,12 @@ XmppClient.prototype.connect = function() {
   
   this.cl = new xmpp.Client({
     jid : this._config.xmpp.jid,
-    password : this._config.xmpp.password
+    password : this._config.xmpp.password,
+    reconnect: true
+  });
+
+  this.cl.on('error', function(data) {
+    util.log('XmppClient Error: ' + JSON.stringify(data));
   });
 
   if (this._debug) {
