@@ -7,6 +7,8 @@ var util = require('util');
 var RSS = require("rss");
 var crypto = require('crypto');
 
+var MAX_PREVIEW_IN_TITLE = 30;
+
 function RssBuilder(options, MESSAGES) {
   options = options || {};
 
@@ -39,14 +41,23 @@ function createFeed(options, MESSAGES, items) {
 
   for ( var i = items.length - 1; i >= 0; i--) {
     var item = items[i];
+    
     var shasum = crypto.createHash('sha1');
     var guid = shasum.update(item.msg, 'utf8').digest('hex');
+    
+    var description = item.msg + ' [' + item.sender + ']'; 
+    
+    var title = description;
+    if (title.length > MAX_PREVIEW_IN_TITLE - 3) {
+      title = title.substring(0, MAX_PREVIEW_IN_TITLE - 3) + '...';
+    }
     feed.item({
       author : item.sender,
-      title : util.format(MESSAGES['feedItemTitle'], item.sender),
-      description : item.msg,
+      title : title,
+      description : description,
       date : item.date,
-      guid : guid
+      guid : guid,
+      url: options.siteUrl
     });
   }
 

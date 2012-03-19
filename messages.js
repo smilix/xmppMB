@@ -19,6 +19,5 @@ module.exports = {
   errorUserNotAllowed : 'You are not allowed to send.',
   /* RssBuilder.js */
   feedDescription : 'All messages from the Jabber group chat \'%s\'.',
-  feedTitle: 'xmppMB feed',
-  feedItemTitle: 'From: %s'
+  feedTitle: 'xmppMB feed'
 };
