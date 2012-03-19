@@ -129,7 +129,7 @@ h1 {
 	-webkit-box-shadow: 3px 3px 5px -3px #CCCCCC;
 	box-shadow: 3px 3px 5px -3px #CCCCCC;
 }
-#postMessage.open,#postMessage.open a.anker {
+#postMessage.open,#postMessage.open a.anker, #postMessage a.anker:hover {
 	color: #5BB75B;
 }
 #postMessage .anker {

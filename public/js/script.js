@@ -90,7 +90,6 @@ $(function() {
     $('#postMessage').addClass("open").removeClass("closed");
     return false;
   };
-  $('#postMessage').mouseenter(show);
   $('#postMessage a.anker').click(show);
 
   $('#postMessage .closeButton').click(hideSendBox);
