@@ -40,7 +40,7 @@ app.configure(function() {
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.static(__dirname + '/public'));
-  app.use(express.logger(':date :method :status :url :referrer :user-agent'));
+  app.use(express.logger(':date :remote-addr :method :status :url :referrer :user-agent'));
 });
 
 app.configure('development', function() {
