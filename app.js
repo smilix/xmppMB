@@ -98,7 +98,7 @@ app.get('/chat-stream', function(req, res) {
   
   
   // remove the message listener to avoid memory leakage 
-  res.on('close', function resClosed() {
+  res.once('close', function resClosed() {
     client.removeListener('message', onMessageFn);
     clearInterval(keepalive);
   });
