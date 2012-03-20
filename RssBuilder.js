@@ -5,7 +5,6 @@
 
 var util = require('util');
 var RSS = require("rss");
-var crypto = require('crypto');
 
 var MAX_PREVIEW_IN_TITLE = 30;
 
@@ -42,9 +41,6 @@ function createFeed(options, MESSAGES, items) {
   for ( var i = items.length - 1; i >= 0; i--) {
     var item = items[i];
     
-    var shasum = crypto.createHash('sha1');
-    var guid = shasum.update(item.msg, 'utf8').digest('hex');
-    
     var description = item.msg + ' [' + item.sender + ']'; 
     
     var title = description;
@@ -56,8 +52,8 @@ function createFeed(options, MESSAGES, items) {
       title : title,
       description : description,
       date : item.date,
-      guid : guid,
-      url: options.siteUrl
+      guid : item.id,
+      url: options.siteUrl + '#' + item.id
     });
   }
 

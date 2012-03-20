@@ -6,6 +6,7 @@
 var xmpp = require('node-xmpp');
 var util = require('util');
 var events = require('events');
+var crypto = require('crypto');
 var StringUtils = require('./StringUtils.js');
 
 function XmppClient(params) {
@@ -42,11 +43,11 @@ XmppClient.prototype.getMessages = function() {
  */
 XmppClient.prototype.connect = function() {
   var self = this;
-  
+
   this.cl = new xmpp.Client({
     jid : this._config.xmpp.jid,
     password : this._config.xmpp.password,
-    reconnect: true
+    reconnect : true
   });
 
   this.cl.on('error', function(data) {
@@ -59,7 +60,7 @@ XmppClient.prototype.connect = function() {
       util.log("[data in] " + d);
     });
   }
-  
+
   // Once connected, set available presence and join room
   self.cl.on('online', function() {
     util.log("We're online!");
@@ -122,40 +123,42 @@ XmppClient.prototype.connect = function() {
     if (StringUtils.isEmpty(sender)) {
       return;
     }
-    
+
     if (sender === self._config.xmpp.roomNick) {
       // a message by this bot, replace the sender with client sender (encoded in the message)
       var index = message.indexOf(':');
       if (index !== -1) {
         sender = message.substring(0, index);
-        message = message.substring(index+2);
+        message = message.substring(index + 2);
       }
-    } 
+    }
 
     var delay = stanza.getChild('delay');
-    var newMsg;
+    var date;
     if (delay) {
       // history group chat message
-      newMsg = {
-        date : new Date(Date.parse(delay.attrs.stamp) - self._config.timezoneOffset),
-        sender : sender,
-        msg : message
-      };
-      // util.log('Recieved history group chat message (' + delay.attrs.stamp + '): ' + message);
+      date = new Date(Date.parse(delay.attrs.stamp) - self._config.timezoneOffset);
     } else {
       // normal group chat message
-      newMsg = {
-        date : new Date(),
-        sender : sender,
-        msg : message
-      };
-      // util.log("Recieved group chat message: " + message);
+      date = new Date();
     }
+
+    // create an id by hashing the message text
+    var shasum = crypto.createHash('sha1');
+    var id = shasum.update(message, 'utf8').digest('hex');
+
+    var newMsg = {
+      id : id,
+      date : date,
+      sender : sender,
+      msg : message
+    };
 
     self._messages.push(newMsg);
 
-    self.emit('message', newMsg, self._messages.length - 1 );
-  };
+    self.emit('message', newMsg, self._messages.length - 1);
+  }
+  ;
 };
 
 // send the message to the groupchat
@@ -163,12 +166,15 @@ XmppClient.prototype.send = function(nick, message) {
   var self = this;
   if (!self._hasRoomEntered) {
     util.log("Currently not in room, queuing this message");
-    self._sendOnRoomEntered.push({nick:nick, msg: message});
+    self._sendOnRoomEntered.push({
+      nick : nick,
+      msg : message
+    });
     return;
   }
-//  util.log(util.format("Sending for '%s': %s", nick, message));
+  // util.log(util.format("Sending for '%s': %s", nick, message));
   self.cl.send(new xmpp.Element('message', {
     to : self._config.xmpp.roomJid,
     type : 'groupchat'
-  }).c('body').t(nick+': '+message));
+  }).c('body').t(nick + ': ' + message));
 };

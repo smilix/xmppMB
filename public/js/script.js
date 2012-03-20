@@ -1,4 +1,4 @@
-var TPL = '<li> <div class="meta"><span class="name">{name}</span> <span class="time">{time}</span></div> <div class="msg">{msg}</div> </li>';
+var TPL = '<li><a name="{anker}"> </a> <div class="meta"><span class="name">{name}</span> <span class="time">{time}</span></div> <div class="msg">{msg}</div> </li>';
 var LINK_DETECTION_REGEX = /(([a-z]+:\/\/)?(([a-z0-9\-]+\.)+(aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel|local|internal|lan|[a-z]{2}))(:[0-9]{1,5})?(\/[a-z0-9_\-\.~]+)*(\/([a-z0-9_\-\.]*)(\?[a-z0-9+_\-\.%=&amp;]*)?)?(#[a-zA-Z0-9!$&'()*+.=-_~:@/?]*)?)/gi;
 
 function init() {
@@ -7,6 +7,11 @@ function init() {
   $.getJSON('/allMessages', function(data) {
     for ( var i = 0; i < data.length; i++) {
       addItem(data[i]);
+    }
+    
+    // scroll to the correct position if hash tag is in url 
+    if (window.location.hash.length > 0) {
+      window.location.href = window.location.href;
     }
     
     initEventSource();
@@ -58,7 +63,7 @@ function addItem(item) {
     return '<a href="' + url + '" target="_blank">'+ item + '</a>';
   });
   
-  var html = TPL.replace(/{name}/, item.sender).replace(/{time}/, item.date).replace(/{msg}/, msg);
+  var html = TPL.replace(/{name}/, item.sender).replace(/{time}/, item.date).replace(/{msg}/, msg).replace(/{anker}/, item.id);
   $("#chatList").prepend($(html));
 }
 

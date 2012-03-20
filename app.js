@@ -151,6 +151,7 @@ function writeStreamHeaders(res, req) {
 
 function prepareMsgForClient(item) {
   return {
+      id: item.id,
       sender: item.sender, 
       date: dateFormat(item.date, config.htmlClientDateFormat),
       msg: item.msg
