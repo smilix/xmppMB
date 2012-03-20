@@ -11,7 +11,7 @@ var MAX_PREVIEW_IN_TITLE = 30;
 function RssBuilder(options, MESSAGES) {
   options = options || {};
 
-  this.lastBuild = 0;
+  this.lastBuild = -1;
   this.feedCache = null;
 
   this.getFeed = function(items) {
@@ -19,9 +19,9 @@ function RssBuilder(options, MESSAGES) {
     if (items.length > 0) {
       newestItemDate = items[items.length - 1].date.getTime();
     }
-    if (this.lastBuild === null || this.lastBuild <= newestItemDate) {
+    if (this.lastBuild === null || this.lastBuild < newestItemDate) {
       this.feedCache = createFeed(options, MESSAGES, items);
-      this.lastBuild = new Date().getTime();
+      this.lastBuild = newestItemDate;
     }
 
     return this.feedCache;
