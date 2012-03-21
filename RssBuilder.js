@@ -30,7 +30,8 @@ function RssBuilder(options, MESSAGES) {
 
 function createFeed(options, MESSAGES, items) {
   util.log("Create new feed");
-  var desc = util.format(MESSAGES['feedDescription'], options.chatRoom) + util.format(' [%s (%s)]', MESSAGES['appName'], MESSAGES['appVersion']);
+  var desc = util.format(MESSAGES['feedDescription'], options.chatRoom) 
+           + util.format(' [%s (%s)]', options.appName, options.appVersion);
   var feed = new RSS({
     title : MESSAGES['feedTitle'],
     description : desc,

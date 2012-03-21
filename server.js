@@ -6,12 +6,13 @@ var dateFormat = require('dateformat');
 var util = require('util');
 var path = require('path');
 
+var PACKAGE = require('./package.json');
+
 var config = requireWithFallback('./config-dev.js', './config.js'); 
 var MESSAGES = requireWithFallback('./messages-dev.js', './messages.js'); 
 
 var XmppClient = require('./XmppClient.js');
 var RssBuilder = require('./RssBuilder.js');
-addVersionInfo(MESSAGES);
 
 var client = new XmppClient({
   config : config
@@ -21,6 +22,8 @@ var client = new XmppClient({
 client.setMaxListeners(30);
 
 var feedBuilder = new RssBuilder({
+  appName: PACKAGE.name,
+  appVersion: PACKAGE.version,
   siteUrl: config.siteUrl,
   feedUrl: config.siteUrl + '/rssFeed',
   chatRoom: config.xmpp.roomJid
@@ -59,7 +62,18 @@ app.configure('production', function() {
 // sites
 
 app.get('/', function(req, res) {
-  res.render('index', MESSAGES );
+  // send all recieved messages to the client
+  var msg = client.getMessages();
+  var result = [];
+  for (var i=0; i<msg.length; i++) {
+    result.push(prepareMsgForClient(msg[i]));
+  }
+  res.render('index', {
+    t: MESSAGES,
+    appName: PACKAGE.name,
+    appVersion: PACKAGE.version,
+    oldMessages: JSON.stringify(result)
+  });
 });
 
 app.post('/newMessage', function(req, res) {
@@ -105,16 +119,6 @@ app.get('/chat-stream', function(req, res) {
   
 });
 
-app.get('/allMessages', function(req, res) {
-  // send all recieved messages to the client
-  var msg = client.getMessages();
-  var result = [];
-  for (var i=0; i<msg.length; i++) {
-    result.push(prepareMsgForClient(msg[i]));
-  }
-  res.json(result);
-});
-
 app.get('/rssFeed', function(req, res) {
   res.charset = 'UTF-8';
   res.contentType('text/xml');
@@ -150,19 +154,13 @@ function writeStreamHeaders(res, req) {
 }
 
 function prepareMsgForClient(item) {
+  var safeHtml = item.msg.replace(/</g, '&lt;').replace(/>/g, '&gt;');
   return {
       id: item.id,
       sender: item.sender, 
       date: dateFormat(item.date, config.htmlClientDateFormat),
-      msg: item.msg
+      msg: safeHtml
   };
-}
-
-// parses the package.json and adds the version and name properties
-function addVersionInfo(appMessages) {
-  var p = require('./package.json');
-  appMessages.appVersion = p.version;
-  appMessages.appName = p.name;
 }
 
 function requireWithFallback(tryFirst, fallback) {
